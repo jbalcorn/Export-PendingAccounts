@@ -1,4 +1,4 @@
-﻿<#
+<#
     .SYNOPSIS
     Exports pending accounts from vault into CSV file
     .PARAMETER VaultAddress
@@ -189,9 +189,11 @@ foreach ($file in $files | Where-Object { $null -ne $_.MasterPassName }) {
 
     # Copy property info over if not null
     foreach ($PropertyName in $PropertiesToCopy) {
-        $property = $masterpass | Select-Object -ExpandProperty $PropertyName
-        if ($null -ne $property) {
-            $file | Add-Member -NotePropertyName $PropertyName -NotePropertyValue $property
+        if ($masterpass.PSObject.Properties.Name -contains $PropertyName) {
+            $property = $masterpass | select -ExpandProperty $PropertyName
+            if ($property -ne $null) {
+                $file | Add-Member -NotePropertyName $PropertyName -NotePropertyValue $property
+            }
         }
     }
 }
